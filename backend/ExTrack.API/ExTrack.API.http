@@ -1,0 +1,6 @@
+@ExTrack.API_HostAddress = http://localhost:5071
+
+GET {{ExTrack.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
