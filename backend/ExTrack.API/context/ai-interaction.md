@@ -10,7 +10,7 @@
 
 ## Workflow
 
-This is the common workflow that we will use for every single feature/fix:
+This is the common workflow that we will use for every single non-develop branch (i.e. docs|chore|refactor|feature|fix branch):
 
 1. **Document** - Document the feature in @context/current-feature.md.
 2. **Branch** - Create new branch for feature, fix, etc
@@ -18,7 +18,7 @@ This is the common workflow that we will use for every single feature/fix:
 4. **Build** - verify the code changes doesn't break the application. Implement unit testing later. Run `dotnet build` and fix any errors
 5. **Iterate** - Iterate and change things if needed
 6. **Commit** - Only after build passes and everything works
-7. **Merge** - Merge to main
+7. **Merge** - Merge to develop branch
 8. **Delete Branch** - Delete branch after merge
 9. **Review** - Review AI-generated code periodically and on demand.
 10. Mark as completed in @context/current-feature.md and add to history
@@ -27,7 +27,7 @@ Do NOT commit without permission and until the build passes. If build fails, fix
 
 ## Branching
 
-We will create a new branch for every feature/fix. Name branch **feature/[feature]** or **fix[fix]**, etc. Ask to delete the branch once merged.
+We will create a new branch for every feature/fix. Name branch **feature/[feature]** or **fix/[fix]**, etc. Ask to delete the branch once merged.
 
 ## Commits
 
@@ -56,4 +56,4 @@ Review AI-generated code periodically, especially for:
 - Security (auth checks, input validation)
 - Performance (N+1 queries)
 - Logic errors (edge cases)
-- Patterns (doesn't it match with the existing codebase?)
+- Patterns (if it doesn't match with the existing codebase)

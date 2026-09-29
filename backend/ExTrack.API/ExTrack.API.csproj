@@ -20,4 +20,13 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".claude\skills\feature\actions\complete.md" />
+    <None Include=".claude\skills\feature\actions\explain.md" />
+    <None Include=".claude\skills\feature\actions\load.md" />
+    <None Include=".claude\skills\feature\actions\review.md" />
+    <None Include=".claude\skills\feature\actions\start.md" />
+    <None Include=".claude\skills\feature\SKILL.md" />
+  </ItemGroup>
+
 </Project>
