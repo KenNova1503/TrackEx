@@ -1,6 +1,6 @@
 # Expense Tracker — Root Context
 
-**Project**: Expense Tracker Portfolio App  
+**Project**: Expense Tracker
 **Tech Stack**: React 19 (JSX) + ASP.NET Core 10 + SQL Server  
 
 ---
@@ -329,10 +329,10 @@ App.jsx (holds selectedCategory state)
 expense-tracker/
 ├── .gitignore
 ├── README.md
-├── claude.md                          ← You are here
+├── claude.md
 │
 ├── backend/
-│   ├── claude.md                      ← Backend-specific guidance
+│   ├── claude.md
 │   ├── ExpenseTracker.API/
 │   │   ├── Controllers/
 │   │   │   └── ExpensesController.cs
@@ -356,7 +356,7 @@ expense-tracker/
 │   └── ExpenseTracker.sln
 │
 └── frontend/
-    ├── claude.md                      ← Frontend-specific guidance
+    ├── claude.md
     ├── src/
     │   ├── components/
     │   │   ├── Header.jsx
@@ -427,7 +427,7 @@ Backend tests go here. Frontend uses browser DevTools.
 ## **11. Git Strategy**
 
 ```
-master (stable releases)
+main (stable releases)
   └── develop (integration branch)
       ├── feature/backend-api (C# work)
       └── feature/frontend-ui (React work)
