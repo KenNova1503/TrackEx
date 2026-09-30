@@ -7,7 +7,7 @@
 
 ## **Quick Navigation**
 
-- **Backend work?** See `/backend/ExTrack/Extrack.API/claude.md`
+- **Backend work?** See `/backend/Extrack.API/claude.md`
 - **Frontend work?** See `/frontend/claude.md`
 - **Database schema?** See below
 - **API endpoints?** See below
