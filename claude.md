@@ -180,8 +180,10 @@ GET    /api/categories                  → Get all categories
 ### **Summaries**
 
 ```
-GET    /api/expenses/summary/monthly    → Get monthly totals (all or by filter)
-GET    /api/expenses/summary/category   → Get totals by category
+GET    /api/expenses/summary/monthly                → Get monthly totals
+GET    /api/expenses/summary/monthly?categoryId=2   → Get monthly totals for one category
+GET    /api/expenses/summary/category               → Get totals by category
+GET    /api/expenses/summary/category?categoryId=2  → Get totals for one category
 ```
 
 **Note**: All endpoints return JSON. Frontend uses Fetch API with POST/PUT payloads.
@@ -420,7 +422,8 @@ Backend tests go here. Frontend uses browser DevTools.
 - GET `/api/expenses` — Verify it appears
 - PUT `/api/expenses/{id}` — Verify update
 - DELETE `/api/expenses/{id}` — Verify deletion
-- GET `/api/expenses/summary/category` — Verify aggregation
+- GET `/api/expenses/summary/monthly` — Verify aggregation (add `?categoryId=` to verify the filter)
+- GET `/api/expenses/summary/category` — Verify aggregation (add `?categoryId=` to verify the filter)
 
 ---
 
