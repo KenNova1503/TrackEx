@@ -201,8 +201,8 @@ namespace ExpenseTracker.API.Services
         Task<ExpenseDto> CreateExpenseAsync(CreateExpenseRequest request);
         Task<ExpenseDto> UpdateExpenseAsync(int id, UpdateExpenseRequest request);
         Task<bool> DeleteExpenseAsync(int id);
-        Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync();
-        Task<IEnumerable<CategorySummaryDto>> GetCategorySummaryAsync();
+        Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync(int? categoryId = null);
+        Task<IEnumerable<CategorySummaryDto>> GetCategorySummaryAsync(int? categoryId = null);
     }
 }
 ```
@@ -334,9 +334,16 @@ namespace ExpenseTracker.API.Services
             return true;
         }
 
-        public async Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync()
+        public async Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync(int? categoryId = null)
         {
-            return await _context.Expenses
+            var query = _context.Expenses.AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(e => e.CategoryId == categoryId.Value);
+            }
+
+            return await query
                 .GroupBy(e => new { e.Date.Year, e.Date.Month })
                 .Select(g => new MonthlySummaryDto
                 {
@@ -349,9 +356,16 @@ namespace ExpenseTracker.API.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<CategorySummaryDto>> GetCategorySummaryAsync()
+        public async Task<IEnumerable<CategorySummaryDto>> GetCategorySummaryAsync(int? categoryId = null)
         {
-            return await _context.Expenses
+            var query = _context.Expenses.AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(e => e.CategoryId == categoryId.Value);
+            }
+
+            return await query
                 .Include(e => e.Category)
                 .GroupBy(e => e.Category.Name)
                 .Select(g => new CategorySummaryDto
@@ -465,16 +479,16 @@ namespace ExpenseTracker.API.Controllers
         }
 
         [HttpGet("summary/monthly")]
-        public async Task<ActionResult<IEnumerable<MonthlySummaryDto>>> GetMonthlySummary()
+        public async Task<ActionResult<IEnumerable<MonthlySummaryDto>>> GetMonthlySummary([FromQuery] int? categoryId = null)
         {
-            var summary = await _service.GetMonthlySummaryAsync();
+            var summary = await _service.GetMonthlySummaryAsync(categoryId);
             return Ok(summary);
         }
 
         [HttpGet("summary/category")]
-        public async Task<ActionResult<IEnumerable<CategorySummaryDto>>> GetCategorySummary()
+        public async Task<ActionResult<IEnumerable<CategorySummaryDto>>> GetCategorySummary([FromQuery] int? categoryId = null)
         {
-            var summary = await _service.GetCategorySummaryAsync();
+            var summary = await _service.GetCategorySummaryAsync(categoryId);
             return Ok(summary);
         }
     }
@@ -685,12 +699,28 @@ URL: {{BASE_URL}}/api/expenses/summary/category
 Expected: 200 OK with array of category summaries
 ```
 
+**GET /api/expenses/summary/category?categoryId=1** (Category Totals, filtered)
+
+```
+Method: GET
+URL: {{BASE_URL}}/api/expenses/summary/category?categoryId=1
+Expected: 200 OK with a single summary for that category (empty if it has no expenses)
+```
+
 **GET /api/expenses/summary/monthly** (Monthly Totals)
 
 ```
 Method: GET
 URL: {{BASE_URL}}/api/expenses/summary/monthly
 Expected: 200 OK with array of monthly summaries
+```
+
+**GET /api/expenses/summary/monthly?categoryId=1** (Monthly Totals, filtered)
+
+```
+Method: GET
+URL: {{BASE_URL}}/api/expenses/summary/monthly?categoryId=1
+Expected: 200 OK with monthly summaries for that category only
 ```
 
 ---

@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>bdaa1af3-ccf9-4da6-a392-c4ae3f1bc9e2</UserSecretsId>
+    <!-- Emit XML docs so OpenAPI picks up controller comments; 1591 = missing XML comment -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
