@@ -44,11 +44,6 @@ The AI works from written context instead of guessing:
 - **`/feature`** manages a feature from start to finish: `load` a spec → `start` (creates the branch) → `review` → `explain` → `complete` (commit, merge into `develop`, reset)
 - **`/cleanup`** handles housekeeping: unused imports, stale TODOs, orphaned files, and context files that have drifted from the code
 
-### MCP servers
-Claude Code connects to **[Context7](https://context7.com)** through MCP (Model Context Protocol), so it can look up current library documentation instead of relying on what the model remembers from training. For example, [EF Core 10: New Features and Breaking Changes](backend/ExTrack.API/context/tech-updates/EFCore_10_mcp.md) was researched with Context7 and checked against Microsoft's official docs. Each change is marked with whether it affects this project.
-
-The server is configured in `backend/ExTrack.API/.mcp.json`. The API key isn't in the file; it reads from a `CONTEXT7_API_KEY` environment variable.
-
 ### Reviewed in small steps
 Features are written as short specs in `context/features/`. Larger features are built in **cycles** that I review one at a time. For example, the REST API was built one endpoint per cycle (DTO → service → controller → DI), and the AI stopped after each cycle for my approval before continuing. Design questions raised during review, such as where validation belongs or whether an ID goes in the route or the body, were settled in conversation before the code moved on.
 
@@ -71,7 +66,7 @@ Claude Code handles the planned, reviewed feature work described above. Copilot 
 | Data | Entity Framework Core 10, Microsoft SQL Server (LocalDB for development) |
 | API docs | OpenAPI + Swagger UI |
 | Frontend | React 19 (JSX), Vite, plain CSS *(in progress)* |
-| AI tooling | Claude Code (Anthropic), GitHub Copilot, Context7 (MCP) |
+| AI tooling | Claude Code (Anthropic), GitHub Copilot |
 
 ---
 
@@ -126,8 +121,7 @@ ExTrack/
 │   ├── ExTrack.slnx
 │   └── ExTrack.API/
 │       ├── .claude/skills/   # Custom Claude Code skills (/feature, /cleanup)
-│       ├── .mcp.json         # MCP server config (Context7)
-│       ├── context/          # AI rules, current feature, feature specs, tech updates
+│       ├── context/          # AI rules, current feature, feature specs
 │       ├── Controllers/
 │       ├── Services/
 │       ├── DTOs/
