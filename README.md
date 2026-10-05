@@ -44,6 +44,9 @@ The AI works from written context instead of guessing:
 - **`/feature`** manages a feature from start to finish: `load` a spec → `start` (creates the branch) → `review` → `explain` → `complete` (commit, merge into `develop`, reset)
 - **`/cleanup`** handles housekeeping: unused imports, stale TODOs, orphaned files, and context files that have drifted from the code
 
+### Custom Claude Code subagents
+- **`code-auditor-net`** is a read-only auditor for the .NET backend. I ask it to review controllers, services, DTOs, models, the DbContext or `Program.cs`. It reports issues in code quality, reusability, performance, and ASP.NET Core / EF Core best practices. Each finding comes with a severity, an explanation, the current code and an improved version. It can only read files, never change them, so every fix still goes through me.
+
 ### MCP servers
 Claude Code connects to **[Context7](https://context7.com)** through MCP (Model Context Protocol), so it can look up current library documentation instead of relying on what the model remembers from training. For example, [EF Core 10: New Features and Breaking Changes](backend/ExTrack.API/context/tech-updates/EFCore_10_mcp.md) was researched with Context7 and checked against Microsoft's official docs. Each change is marked with whether it affects this project.
 
@@ -126,6 +129,7 @@ ExTrack/
 │   ├── ExTrack.slnx
 │   └── ExTrack.API/
 │       ├── .claude/skills/   # Custom Claude Code skills (/feature, /cleanup)
+│       ├── .claude/agents/   # Custom Claude Code subagents (code-auditor-net)
 │       ├── .mcp.json         # MCP server config (Context7)
 │       ├── context/          # AI rules, current feature, feature specs, tech updates
 │       ├── Controllers/
