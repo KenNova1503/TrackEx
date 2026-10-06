@@ -33,9 +33,9 @@ The AI works from written context instead of guessing:
 
 | File | Purpose |
 |------|---------|
-| `claude.md` (root) | Project scope, database schema, API contract, UI layout, design decisions |
-| `backend/ExTrack.API/claude.md` | Backend conventions and reference code |
-| `frontend/claude.md` | Frontend conventions |
+| `CLAUDE.md` (root) | Project scope, database schema, API contract, UI layout, design decisions |
+| `backend/ExTrack.API/CLAUDE.md` | Backend conventions and reference code |
+| `frontend/extrack-ui/CLAUDE.md` | Frontend conventions |
 | `context/coding-rules.md` | C# / .NET coding standards |
 | `context/ai-interaction.md` | Rules for the AI: ask before committing, no scope creep, minimal changes, stop when stuck |
 | `context/current-feature.md` | The feature in progress, plus a history of completed features |
@@ -124,7 +124,7 @@ In Development, pending migrations are applied automatically when the app starts
 
 ```
 ExTrack/
-├── claude.md                 # Root AI context (scope, schema, API contract)
+├── CLAUDE.md                 # Root AI context (scope, schema, API contract)
 ├── backend/
 │   ├── ExTrack.slnx
 │   └── ExTrack.API/
@@ -137,7 +137,9 @@ ExTrack/
 │       ├── DTOs/
 │       ├── Models/
 │       └── Data/             # DbContext + migrations
-└── frontend/                 # React app (in progress)
+└── frontend/
+    └── extrack-ui/           # React app (in progress)
+        └── CLAUDE.md         # Frontend AI context
 ```
 
 ---
