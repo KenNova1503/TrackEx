@@ -6,7 +6,7 @@
 **HTTP**: Fetch API  
 **Build Tool**: Vite
 
-**For shared context** (API endpoints, database schema, design theme): See `/claude.md` (root)
+**For shared context** (API endpoints, database schema, design theme): See `../../CLAUDE.md` (root)
 
 ---
 
@@ -39,6 +39,7 @@ src/
 │   ├── Dashboard.jsx
 │   ├── SummaryCard.jsx
 │   ├── CategoryChart.jsx
+│   ├── RecentExpenses.jsx
 │   ├── ExpensesList.jsx
 │   ├── ExpenseTable.jsx
 │   ├── ExpenseRow.jsx
@@ -170,6 +171,8 @@ function Parent() {
 
 ### **App.jsx** (Root component, holds shared state)
 
+The app has two views (see root `CLAUDE.md` § 5). `currentView` decides which one renders; `selectedCategory` and `refreshTrigger` are shared so both views stay in sync.
+
 ```jsx
 import { useState } from 'react';
 import Header from './components/Header';
@@ -193,7 +196,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <Header onNavigate={setCurrentView} />
+      <Header currentView={currentView} onNavigate={setCurrentView} />
       <div className="main-layout">
         <Sidebar onCategorySelect={handleCategorySelect} selectedCategory={selectedCategory} />
         <main className="main-content">
@@ -201,6 +204,7 @@ function App() {
             <Dashboard 
               selectedCategory={selectedCategory}
               refreshTrigger={refreshTrigger}
+              onNavigate={setCurrentView}
             />
           )}
           {currentView === 'expenses' && (
@@ -224,6 +228,34 @@ export default App;
 ---
 
 ## **4. Core Components**
+
+### **Header.jsx** (View navigation)
+
+```jsx
+function Header({ currentView, onNavigate }) {
+  return (
+    <header className="header">
+      <span className="logo">ExTrack</span>
+      <nav className="nav">
+        <button
+          className={`nav-btn ${currentView === 'dashboard' ? 'active' : ''}`}
+          onClick={() => onNavigate('dashboard')}
+        >
+          Dashboard
+        </button>
+        <button
+          className={`nav-btn ${currentView === 'expenses' ? 'active' : ''}`}
+          onClick={() => onNavigate('expenses')}
+        >
+          Expenses
+        </button>
+      </nav>
+    </header>
+  );
+}
+
+export default Header;
+```
 
 ### **Sidebar.jsx** (Category Filter)
 
@@ -641,13 +673,15 @@ export default ExpenseRow;
 import { useState, useEffect } from 'react';
 import SummaryCard from './SummaryCard';
 import CategoryChart from './CategoryChart';
+import RecentExpenses from './RecentExpenses';
 import { getExpenses, getMonthlySummary, getCategorySummary } from '../services/api';
 import '../styles/Dashboard.css';
 
-function Dashboard({ selectedCategory, refreshTrigger }) {
+function Dashboard({ selectedCategory, refreshTrigger, onNavigate }) {
   const [totalSpent, setTotalSpent] = useState(0);
   const [expenseCount, setExpenseCount] = useState(0);
   const [categoryData, setCategoryData] = useState([]);
+  const [recentExpenses, setRecentExpenses] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -663,6 +697,9 @@ function Dashboard({ selectedCategory, refreshTrigger }) {
       setExpenseCount(expenses.length);
       setTotalSpent(expenses.reduce((sum, e) => sum + e.amount, 0));
       setCategoryData(summary);
+      setRecentExpenses(
+        [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5)
+      );
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
     } finally {
@@ -703,6 +740,10 @@ function Dashboard({ selectedCategory, refreshTrigger }) {
       ) : (
         <div className="dashboard-content">
           <CategoryChart data={categoryData} />
+          <RecentExpenses
+            expenses={recentExpenses}
+            onViewAll={() => onNavigate('expenses')}
+          />
         </div>
       )}
     </div>
@@ -710,6 +751,50 @@ function Dashboard({ selectedCategory, refreshTrigger }) {
 }
 
 export default Dashboard;
+```
+
+### **RecentExpenses.jsx** (Dashboard, read-only)
+
+Shows the latest 5 expenses. No Edit/Delete here — that lives in the Expenses view.
+
+```jsx
+function RecentExpenses({ expenses, onViewAll }) {
+  return (
+    <div className="recent-expenses">
+      <div className="recent-header">
+        <h3>Recent expenses</h3>
+        <button className="btn-link" onClick={onViewAll}>View all →</button>
+      </div>
+
+      {expenses.length === 0 ? (
+        <p className="empty-state">No expenses yet.</p>
+      ) : (
+        <table className="expenses-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {expenses.map(expense => (
+              <tr key={expense.id}>
+                <td>{new Date(expense.date).toLocaleDateString()}</td>
+                <td>{expense.categoryName}</td>
+                <td>{expense.description || 'N/A'}</td>
+                <td className="amount">${expense.amount.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+export default RecentExpenses;
 ```
 
 ### **SummaryCard.jsx**
