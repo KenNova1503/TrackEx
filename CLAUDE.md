@@ -353,7 +353,6 @@ App.jsx (holds currentView + selectedCategory state)
 
 ```
 ExTrack/
-├── .gitignore
 ├── LICENSE
 ├── README.md
 ├── CLAUDE.md                          # Root context (this file)
