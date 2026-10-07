@@ -35,7 +35,6 @@ src/
 ├── components/
 │   ├── Header.jsx
 │   ├── Sidebar.jsx
-│   ├── CategoryFilter.jsx
 │   ├── Dashboard.jsx
 │   ├── SummaryCard.jsx
 │   ├── CategoryChart.jsx
@@ -43,8 +42,7 @@ src/
 │   ├── ExpensesList.jsx
 │   ├── ExpenseTable.jsx
 │   ├── ExpenseRow.jsx
-│   ├── ExpenseForm.jsx
-│   └── Layout.jsx
+│   └── ExpenseForm.jsx
 ├── services/
 │   └── api.js
 ├── styles/
