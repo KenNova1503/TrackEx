@@ -7,8 +7,8 @@
 
 ## **Quick Navigation**
 
-- **Backend work?** See `/backend/Extrack.API/claude.md`
-- **Frontend work?** See `/frontend/claude.md`
+- **Backend work?** See `/backend/ExTrack.API/CLAUDE.md`
+- **Frontend work?** See `/frontend/extrack-ui/CLAUDE.md`
 - **Database schema?** See below
 - **API endpoints?** See below
 - **Design theme?** See Dashboard Design section
@@ -192,43 +192,67 @@ GET    /api/expenses/summary/category?categoryId=2  → Get totals for one categ
 
 ## **5. Component Architecture & App Layout**
 
+### **Views**
+
+The app has **two views**. The Header nav switches between them; the Sidebar
+category filter stays visible and applies to both.
+
+| View          | Purpose                        | Contents                                                         |
+| ------------- | ------------------------------ | ---------------------------------------------------------------- |
+| **Dashboard** | At-a-glance overview (default) | 4 summary cards, category bar chart, recent expenses (read-only) |
+| **Expenses**  | Manage expenses (full CRUD)    | Add Expense button, full expense table with Edit/Delete, modal   |
+
 ### **Layout Structure**
 
+**Dashboard view** (default):
+
 ```
-┌─────────────────────────────────────────┐
-│          Header (Logo, Nav)             │
-├─────┬───────────────────────────────────┤
-│     │                                   │
-│ Left│         Main Content              │
-│ Side│       (Dashboard or List)         │
-│ bar │                                   │
-│     │                                   │
-│ Cat │  ┌─────────────────────────────┐ │
-│ egory│  │  ADD EXPENSE Button        │ │
-│ Filt │  └─────────────────────────────┘ │
-│ er  │                                   │
-│     │  ┌──────────────────────────────┐ │
-│     │  │ ExpensesList / ExpenseTable  │ │
-│     │  │ (shows rows, edit/delete)    │ │
-│     │  └──────────────────────────────┘ │
-│     │                                   │
-└─────┴───────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│  Header (Logo)        [Dashboard]  [Expenses]    │
+├──────────┬───────────────────────────────────────┤
+│          │  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐  │
+│ Sidebar  │  │ Card │ │ Card │ │ Card │ │ Card │  │
+│          │  └──────┘ └──────┘ └──────┘ └──────┘  │
+│ Category │  ┌────────────────┐ ┌───────────────┐ │
+│ Filter   │  │ CategoryChart  │ │ Recent        │ │
+│          │  │ (bar chart)    │ │ Expenses      │ │
+│          │  │                │ │ (read-only)   │ │
+│          │  │                │ │ View all →    │ │
+│          │  └────────────────┘ └───────────────┘ │
+└──────────┴───────────────────────────────────────┘
+```
+
+**Expenses view**:
+
+```
+┌──────────────────────────────────────────────────┐
+│  Header (Logo)        [Dashboard]  [Expenses]    │
+├──────────┬───────────────────────────────────────┤
+│          │  Expenses             [+ Add Expense] │
+│ Sidebar  │  ┌─────────────────────────────────┐  │
+│          │  │ ExpenseTable                    │  │
+│ Category │  │ (all rows, Edit / Delete)       │  │
+│ Filter   │  │                                 │  │
+│          │  └─────────────────────────────────┘  │
+│          │  ExpenseForm modal (Add / Edit)       │
+└──────────┴───────────────────────────────────────┘
 ```
 
 ### **Component Tree**
 
 ```
-App.jsx (holds selectedCategory state)
-├── Header.jsx
+App.jsx (holds currentView + selectedCategory state)
+├── Header.jsx (nav: Dashboard | Expenses → sets currentView)
 ├── Sidebar.jsx
 │   └── CategoryFilter.jsx
 │       └── Category button list (with click handlers)
-└── MainContent.jsx
-    ├── Dashboard.jsx (summary cards + chart)
+└── MainContent.jsx (renders ONE view based on currentView)
+    ├── [view: dashboard] Dashboard.jsx
     │   ├── SummaryCard.jsx (×4)
-    │   └── CategoryChart.jsx (bar chart via Chart.js)
+    │   ├── CategoryChart.jsx (bar chart via Chart.js)
+    │   └── RecentExpenses.jsx (read-only, latest 5, "View all →" switches to Expenses)
     │
-    └── ExpensesList.jsx (main list view)
+    └── [view: expenses] ExpensesList.jsx (full CRUD list)
         ├── AddExpenseButton.jsx
         ├── ExpenseTable.jsx
         │   └── ExpenseRow.jsx (×N items)
@@ -279,7 +303,7 @@ App.jsx (holds selectedCategory state)
 2. **Two-Column Content**:
    
    - **Left**: Horizontal bar chart (expense breakdown by category)
-   - **Right**: Recent expenses table (date, category, description, amount)
+   - **Right**: Recent expenses (date, category, description, amount). Read-only, latest 5, no Edit/Delete; "View all →" opens the Expenses view
 
 3. **Responsive**: Stacks on mobile (≤900px), side-by-side on desktop
 
@@ -287,7 +311,7 @@ App.jsx (holds selectedCategory state)
 
 ## **7. Data Flow: User Actions**
 
-### **User Adds an Expense**
+### **User Adds an Expense** (Expenses view)
 
 1. Clicks "Add Expense" button
 2. Modal opens with empty ExpenseForm
@@ -298,7 +322,7 @@ App.jsx (holds selectedCategory state)
 7. React state updates: `setExpenses([...expenses, newExpense])`
 8. Modal closes, list re-renders with new entry
 
-### **User Edits an Expense**
+### **User Edits an Expense** (Expenses view)
 
 1. Clicks "Edit" on expense row
 2. Modal opens with ExpenseForm pre-filled
@@ -308,19 +332,19 @@ App.jsx (holds selectedCategory state)
 6. API returns updated expense
 7. React state updates: `setExpenses(expenses.map(e => e.id === id ? updated : e))`
 8. Modal closes, row updates immediately
-9. Dashboard cards recalculate totals
+9. Dashboard reflects the change next time it's opened (`refreshTrigger`)
 
-### **User Filters by Category**
+### **User Filters by Category** (applies to whichever view is active)
 
 1. Clicks category in sidebar (e.g., "Food (8)")
 2. Button highlights (selected state)
-3. `setSelectedCategory(categoryId)` called
-4. ExpensesList's `useEffect` detects change
+3. `setSelectedCategory(categoryId)` called in App.jsx
+4. The active view's `useEffect` (Dashboard or ExpensesList) detects change
 5. Calls `/api/expenses?categoryId=2`
 6. Backend filters via LINQ, returns only those expenses
 7. React state updates: `setExpenses(filtered)`
-8. List re-renders showing only Food expenses
-9. Dashboard totals update to reflect Food category only
+8. Active view re-renders: Expenses shows only Food rows; Dashboard cards, chart and recent expenses reflect Food only
+9. Filter persists when switching views (state lives in App.jsx)
 10. Click "All Expenses" to reset filter
 
 ---
@@ -328,63 +352,76 @@ App.jsx (holds selectedCategory state)
 ## **8. Project Folder Structure**
 
 ```
-expense-tracker/
+ExTrack/
 ├── .gitignore
+├── LICENSE
 ├── README.md
-├── claude.md
+├── CLAUDE.md                          # Root context (this file)
 │
 ├── backend/
-│   ├── claude.md
-│   ├── ExpenseTracker.API/
-│   │   ├── Controllers/
-│   │   │   └── ExpensesController.cs
-│   │   ├── Models/
-│   │   │   ├── Expense.cs
-│   │   │   └── Category.cs
-│   │   ├── Data/
-│   │   │   ├── AppDbContext.cs
-│   │   │   └── Migrations/
-│   │   ├── Services/
-│   │   │   └── ExpenseService.cs
-│   │   ├── DTOs/
-│   │   │   ├── ExpenseDto.cs
-│   │   │   ├── CreateExpenseRequest.cs
-│   │   │   ├── UpdateExpenseRequest.cs
-│   │   │   └── CategoryDto.cs
-│   │   ├── Program.cs
-│   │   ├── appsettings.json
-│   │   └── ExpenseTracker.API.csproj
-│   │
-│   └── ExpenseTracker.sln
+│   ├── .gitignore
+│   ├── ExTrack.slnx
+│   └── ExTrack.API/
+│       ├── CLAUDE.md                  # Backend context
+│       ├── .claude/                   # Claude Code skills & subagents
+│       ├── .mcp.json                  # MCP server config (Context7)
+│       ├── context/                   # AI rules, current feature, feature specs, tech updates
+│       ├── Controllers/
+│       │   ├── CategoriesController.cs
+│       │   └── ExpensesController.cs
+│       ├── Models/
+│       │   ├── Category.cs
+│       │   └── Expense.cs
+│       ├── Data/
+│       │   ├── AppDbContext.cs
+│       │   └── Migrations/
+│       ├── Services/
+│       │   ├── ICategoryService.cs
+│       │   ├── CategoryService.cs
+│       │   ├── IExpenseService.cs
+│       │   └── ExpenseService.cs
+│       ├── DTOs/
+│       │   ├── CategoryDto.cs
+│       │   ├── CategorySummaryDto.cs
+│       │   ├── CreateExpenseRequest.cs
+│       │   ├── ExpenseDto.cs
+│       │   ├── MonthlySummaryDto.cs
+│       │   └── UpdateExpenseRequest.cs
+│       ├── Program.cs
+│       ├── appsettings.json
+│       └── ExTrack.API.csproj
 │
 └── frontend/
-    ├── claude.md
-    ├── src/
-    │   ├── components/
-    │   │   ├── Header.jsx
-    │   │   ├── Sidebar.jsx
-    │   │   ├── CategoryFilter.jsx
-    │   │   ├── Dashboard.jsx
-    │   │   ├── SummaryCard.jsx
-    │   │   ├── CategoryChart.jsx
-    │   │   ├── ExpensesList.jsx
-    │   │   ├── ExpenseTable.jsx
-    │   │   ├── ExpenseRow.jsx
-    │   │   ├── ExpenseForm.jsx
-    │   │   └── Layout.jsx
-    │   ├── services/
-    │   │   └── api.js
-    │   ├── styles/
-    │   │   ├── App.css
-    │   │   ├── Dashboard.css
-    │   │   ├── ExpensesList.css
-    │   │   └── Modal.css
-    │   ├── App.jsx
-    │   ├── main.jsx
-    │   └── index.html
-    ├── package.json
-    ├── .gitignore
-    └── vite.config.js
+    └── extrack-ui/
+        ├── CLAUDE.md                  # Frontend context
+        ├── src/
+        │   ├── components/            # (planned)
+        │   │   ├── Header.jsx
+        │   │   ├── Sidebar.jsx
+        │   │   ├── CategoryFilter.jsx
+        │   │   ├── Dashboard.jsx
+        │   │   ├── SummaryCard.jsx
+        │   │   ├── CategoryChart.jsx
+        │   │   ├── RecentExpenses.jsx
+        │   │   ├── ExpensesList.jsx
+        │   │   ├── ExpenseTable.jsx
+        │   │   ├── ExpenseRow.jsx
+        │   │   ├── ExpenseForm.jsx
+        │   │   └── Layout.jsx
+        │   ├── services/              # (planned)
+        │   │   └── api.js
+        │   ├── styles/                # (planned)
+        │   │   ├── App.css
+        │   │   ├── Dashboard.css
+        │   │   ├── ExpensesList.css
+        │   │   └── Modal.css
+        │   ├── App.jsx
+        │   └── main.jsx
+        ├── index.html
+        ├── eslint.config.js
+        ├── package.json
+        ├── .gitignore
+        └── vite.config.js
 ```
 
 ---

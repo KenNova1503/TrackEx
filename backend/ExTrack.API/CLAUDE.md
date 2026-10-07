@@ -5,7 +5,7 @@
 **ORM**: Entity Framework Core 10.0  
 **Testing**: Postman
 
-**For shared context** (database schema, API endpoints, design decisions): See `../../../claude.md` (root)
+**For shared context** (database schema, API endpoints, design decisions): See `../../CLAUDE.md` (root)
 
 ---
 
