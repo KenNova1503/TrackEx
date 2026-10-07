@@ -36,12 +36,12 @@ The AI works from written context instead of guessing:
 | `CLAUDE.md` (root) | Project scope, database schema, API contract, UI layout, design decisions |
 | `backend/ExTrack.API/CLAUDE.md` | Backend conventions and reference code |
 | `frontend/extrack-ui/CLAUDE.md` | Frontend conventions |
-| `context/coding-rules.md` | C# / .NET coding standards |
-| `context/ai-interaction.md` | Rules for the AI: ask before committing, no scope creep, minimal changes, stop when stuck |
-| `context/current-feature.md` | The feature in progress, plus a history of completed features |
+| `context/coding-rules.md` (backend) | C# / .NET coding standards |
+| `context/ai-interaction.md` (backend and frontend) | Rules for the AI: ask before committing, no scope creep, minimal changes, stop when stuck |
+| `context/current-feature.md` (backend and frontend) | The feature in progress, plus a history of completed features |
 
 ### Custom Claude Code skills
-- **`/feature`** manages a feature from start to finish: `load` a spec → `start` (creates the branch) → `review` → `explain` → `complete` (commit, merge into `develop`, reset)
+- **`/feature`** (backend and frontend) manages a feature from start to finish: `load` a spec → `start` (creates the branch) → `review` → `explain` → `complete` (commit, merge into `develop`, reset)
 - **`/cleanup`** handles housekeeping: unused imports, stale TODOs, orphaned files, and context files that have drifted from the code
 
 ### Custom Claude Code subagents
@@ -139,7 +139,9 @@ ExTrack/
 │       └── Data/             # DbContext + migrations
 └── frontend/
     └── extrack-ui/           # React app (in progress)
-        └── CLAUDE.md         # Frontend AI context
+        ├── CLAUDE.md         # Frontend AI context
+        ├── .claude/skills/   # /feature skill (copy of the backend's)
+        └── context/          # AI rules, current feature, feature specs
 ```
 
 ---

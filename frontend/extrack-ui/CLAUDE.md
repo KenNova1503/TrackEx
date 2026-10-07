@@ -8,6 +8,8 @@
 
 **For shared context** (API endpoints, database schema, design theme): See `../../CLAUDE.md` (root)
 
+**Workflow**: Each task has a spec in `context/features/` and runs through the `/feature` skill (`load` → `start` → `review` → `explain` → `complete`). Follow `context/ai-interaction.md`; the feature in progress is tracked in `context/current-feature.md`.
+
 ---
 
 ## **1. Quick Start: Frontend Setup**

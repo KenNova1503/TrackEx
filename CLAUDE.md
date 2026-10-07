@@ -386,6 +386,8 @@ ExTrack/
 └── frontend/
     └── extrack-ui/
         ├── CLAUDE.md                  # Frontend context
+        ├── .claude/                   # Claude Code skills (/feature)
+        ├── context/                   # AI rules, current feature, feature specs
         ├── src/
         │   ├── components/            # (planned)
         │   │   ├── Header.jsx
