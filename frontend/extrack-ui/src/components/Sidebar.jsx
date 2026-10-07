@@ -42,23 +42,26 @@ function Sidebar({ selectedCategory, onCategorySelect }) {
 
   return (
     <aside className="sidebar" aria-label="Category filter">
-      {/* A plain label, not a heading, so the view's h1 stays the first heading on the page */}
-      <p className="sidebar-title" id="category-filter-label">Categories</p>
+      {/* Inner wrapper sticks while scrolling; the aside itself stays full height */}
+      <div className="sidebar-content">
+        {/* A plain label, not a heading, so the view's h1 stays the first heading on the page */}
+        <p className="sidebar-title" id="category-filter-label">Categories</p>
 
-      {loading && <p className="sidebar-status">Loading…</p>}
+        {loading && <p className="sidebar-status">Loading…</p>}
 
-      {error && (
-        <p className="sidebar-status sidebar-error" role="alert">
-          Couldn't load categories: {error}
-        </p>
-      )}
+        {error && (
+          <p className="sidebar-status sidebar-error" role="alert">
+            Couldn't load categories: {error}
+          </p>
+        )}
 
-      {!loading && !error && (
-        <div className="category-list" role="group" aria-labelledby="category-filter-label">
-          {renderButton(null, 'All Expenses')}
-          {categories.map(category => renderButton(category.id, category.name))}
-        </div>
-      )}
+        {!loading && !error && (
+          <div className="category-list" role="group" aria-labelledby="category-filter-label">
+            {renderButton(null, 'All Expenses')}
+            {categories.map(category => renderButton(category.id, category.name))}
+          </div>
+        )}
+      </div>
     </aside>
   )
 }

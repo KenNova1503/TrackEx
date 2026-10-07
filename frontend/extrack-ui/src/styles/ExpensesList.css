@@ -1,0 +1,80 @@
+/* Status lines: loading, empty and error */
+.status-message {
+  margin: 0;
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+}
+
+.status-message.error {
+  color: var(--danger);
+}
+
+/* Scrolls sideways on narrow screens instead of squeezing the columns */
+.table-wrapper {
+  overflow-x: auto;
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+}
+
+.expenses-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.expenses-table th,
+.expenses-table td {
+  padding: 12px var(--spacing-md);
+  text-align: left;
+  border-bottom: var(--border-width) solid var(--border);
+  white-space: nowrap;
+}
+
+.expenses-table th {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.expenses-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.expenses-table tbody tr:hover {
+  background: var(--bg-light);
+}
+
+/* Description is the only column allowed to wrap */
+.expenses-table td:nth-child(3) {
+  white-space: normal;
+  min-width: 160px;
+}
+
+.expenses-table .amount {
+  text-align: right;
+  font-variant-numeric: tabular-nums;  /* digits line up in the column */
+}
+
+.expenses-table td.amount {
+  font-weight: 500;
+}
+
+.expenses-table .muted {
+  color: var(--text-secondary);
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-light);
+  border: var(--border-width) solid var(--border);
+  border-radius: 999px;
+}
