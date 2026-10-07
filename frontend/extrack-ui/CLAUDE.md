@@ -903,7 +903,8 @@ export default CategoryChart;
 ## **5. API Service Layer** (services/api.js)
 
 ```javascript
-const BASE_URL = 'http://localhost:5000/api';
+// Relative URL: the Vite dev server proxies /api to the backend (http://localhost:5071)
+const BASE_URL = '/api';
 
 // Helper function for requests
 const fetchJSON = async (url, options = {}) => {
