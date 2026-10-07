@@ -241,32 +241,25 @@ category filter stays visible and applies to both.
 ### **Component Tree**
 
 ```
-App.jsx (holds currentView + selectedCategory state)
+App.jsx (holds currentView + selectedCategory state; renders ONE view based on currentView)
 ├── Header.jsx (nav: Dashboard | Expenses → sets currentView)
-├── Sidebar.jsx
-│   └── CategoryFilter.jsx
-│       └── Category button list (with click handlers)
-└── MainContent.jsx (renders ONE view based on currentView)
-    ├── [view: dashboard] Dashboard.jsx
-    │   ├── SummaryCard.jsx (×4)
-    │   ├── CategoryChart.jsx (bar chart via Chart.js)
-    │   └── RecentExpenses.jsx (read-only, latest 5, "View all →" switches to Expenses)
+├── Sidebar.jsx (category filter: "All Expenses" + one button per category)
+│
+├── [view: dashboard] Dashboard.jsx
+│   ├── SummaryCard.jsx (×4)
+│   ├── CategoryChart.jsx (bar chart via Chart.js)
+│   └── RecentExpenses.jsx (read-only, latest 5, "View all →" switches to Expenses)
+│
+└── [view: expenses] ExpensesList.jsx (full CRUD list + "+ Add Expense" button)
+    ├── ExpenseTable.jsx
+    │   └── ExpenseRow.jsx (×N items, Edit → opens modal, Delete)
     │
-    └── [view: expenses] ExpensesList.jsx (full CRUD list)
-        ├── AddExpenseButton.jsx
-        ├── ExpenseTable.jsx
-        │   └── ExpenseRow.jsx (×N items)
-        │       ├── Edit button → opens modal
-        │       └── Delete button
-        │
-        └── ExpenseForm.jsx (modal, reused for Add & Edit)
-            ├── AmountInput.jsx
-            ├── CategorySelect.jsx (dropdown)
-            ├── DatePicker.jsx
-            ├── DescriptionTextarea.jsx
-            ├── SaveButton.jsx
-            └── CancelButton.jsx
+    └── ExpenseForm.jsx (modal, reused for Add & Edit; amount, category,
+                         date and description fields + Save/Cancel buttons)
 ```
+
+**Rule of thumb**: a component gets its own file when it has its own state or
+logic, or is reused. Plain inputs and buttons stay inline in their parent.
 
 ---
 
@@ -298,7 +291,7 @@ App.jsx (holds currentView + selectedCategory state)
    - Total spent this month
    - Number of expenses
    - Top category
-   - Budget remaining
+   - vs last month: this month's total compared with last month's (e.g. `▲ 12.4%`), from `/summary/monthly`. Replaces "Budget remaining", since budgets are out of MVP scope
 
 2. **Two-Column Content**:
    
@@ -393,11 +386,12 @@ ExTrack/
 └── frontend/
     └── extrack-ui/
         ├── CLAUDE.md                  # Frontend context
+        ├── .claude/                   # Claude Code skills (/feature)
+        ├── context/                   # AI rules, current feature, feature specs
         ├── src/
         │   ├── components/            # (planned)
         │   │   ├── Header.jsx
         │   │   ├── Sidebar.jsx
-        │   │   ├── CategoryFilter.jsx
         │   │   ├── Dashboard.jsx
         │   │   ├── SummaryCard.jsx
         │   │   ├── CategoryChart.jsx
@@ -405,8 +399,7 @@ ExTrack/
         │   │   ├── ExpensesList.jsx
         │   │   ├── ExpenseTable.jsx
         │   │   ├── ExpenseRow.jsx
-        │   │   ├── ExpenseForm.jsx
-        │   │   └── Layout.jsx
+        │   │   └── ExpenseForm.jsx
         │   ├── services/              # (planned)
         │   │   └── api.js
         │   ├── styles/                # (planned)
@@ -431,6 +424,7 @@ ExTrack/
 | ------------------------------------- | -------------------------------------------------------------------- |
 | **React Hooks over Class Components** | Modern, simpler, less boilerplate. Production standard.              |
 | **Plain React/JSX (no TypeScript)**   | Learn React patterns first; add TS after MVP is stable.              |
+| **Components only where they earn it**| Split out state, logic or reuse; keep plain inputs/buttons inline.   |
 | **DECIMAL(10,2) for money**           | Never use float for currency (rounding errors).                      |
 | **Separate Categories table**         | Normalization: enables filtering, aggregation, no duplication.       |
 | **DTOs (Data Transfer Objects)**      | Don't expose DB models directly. Control API contracts.              |
