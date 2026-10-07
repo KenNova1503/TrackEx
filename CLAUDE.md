@@ -298,7 +298,7 @@ App.jsx (holds currentView + selectedCategory state)
    - Total spent this month
    - Number of expenses
    - Top category
-   - Budget remaining
+   - vs last month: this month's total compared with last month's (e.g. `▲ 12.4%`), from `/summary/monthly`. Replaces "Budget remaining", since budgets are out of MVP scope
 
 2. **Two-Column Content**:
    

@@ -682,6 +682,7 @@ function Dashboard({ selectedCategory, refreshTrigger, onNavigate }) {
   const [expenseCount, setExpenseCount] = useState(0);
   const [categoryData, setCategoryData] = useState([]);
   const [recentExpenses, setRecentExpenses] = useState([]);
+  const [monthlyData, setMonthlyData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -693,10 +694,12 @@ function Dashboard({ selectedCategory, refreshTrigger, onNavigate }) {
     try {
       const expenses = await getExpenses(selectedCategory);
       const summary = await getCategorySummary();
+      const monthly = await getMonthlySummary(selectedCategory);
 
       setExpenseCount(expenses.length);
       setTotalSpent(expenses.reduce((sum, e) => sum + e.amount, 0));
       setCategoryData(summary);
+      setMonthlyData(monthly);
       setRecentExpenses(
         [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5)
       );
@@ -709,6 +712,18 @@ function Dashboard({ selectedCategory, refreshTrigger, onNavigate }) {
 
   const topCategory = categoryData.length > 0 ? categoryData[0] : null;
 
+  // /summary/monthly only returns months that have expenses (newest first),
+  // so look months up by year/month instead of taking the first two rows.
+  const now = new Date();
+  const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const totalFor = (date) =>
+    monthlyData.find(m => m.year === date.getFullYear() && m.month === date.getMonth() + 1)?.total ?? 0;
+  const thisMonthTotal = totalFor(now);
+  const lastMonthTotal = totalFor(lastMonthDate);
+  const monthChange = lastMonthTotal > 0
+    ? ((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100
+    : null;  // No spending last month → no meaningful % change
+
   return (
     <div className="dashboard">
       <h1>Dashboard</h1>
@@ -716,7 +731,7 @@ function Dashboard({ selectedCategory, refreshTrigger, onNavigate }) {
       <div className="summary-cards">
         <SummaryCard
           label="Total spent this month"
-          value={`$${totalSpent.toFixed(2)}`}
+          value={`$${thisMonthTotal.toFixed(2)}`}
           delta={`${expenseCount} expenses`}
         />
         <SummaryCard
@@ -733,6 +748,13 @@ function Dashboard({ selectedCategory, refreshTrigger, onNavigate }) {
             />
           </>
         )}
+        <SummaryCard
+          label="vs last month"
+          value={monthChange === null
+            ? 'No data'
+            : `${monthChange >= 0 ? '▲' : '▼'} ${Math.abs(monthChange).toFixed(1)}%`}
+          delta={`$${lastMonthTotal.toFixed(2)} last month`}
+        />
       </div>
 
       {loading ? (
@@ -939,8 +961,11 @@ export const getCategories = () => {
 };
 
 // Summaries
-export const getMonthlySummary = () => {
-  return fetchJSON(`${BASE_URL}/expenses/summary/monthly`);
+export const getMonthlySummary = (categoryId = null) => {
+  const url = categoryId
+    ? `${BASE_URL}/expenses/summary/monthly?categoryId=${categoryId}`
+    : `${BASE_URL}/expenses/summary/monthly`;
+  return fetchJSON(url);
 };
 
 export const getCategorySummary = () => {
