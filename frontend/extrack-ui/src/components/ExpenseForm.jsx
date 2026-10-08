@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { createExpense, getCategories } from '../services/api'
+import { createExpense, getCategories, updateExpense } from '../services/api'
 import '../styles/Modal.css'
 
 // Same limits as the backend (Expense.MAX_AMOUNT / Expense.MAX_DESCRIPTION_LENGTH)
@@ -21,6 +21,22 @@ const todayLocal = () => {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
 }
 
+// Starting values: the row being edited (as strings, like typed input) or an empty add form
+const initialForm = (expense) =>
+  expense
+    ? {
+        amount: String(expense.amount),
+        categoryId: String(expense.categoryId),
+        date: expense.date.slice(0, 10),  // "2026-10-06T00:00:00" → "2026-10-06"
+        description: expense.description ?? '',
+      }
+    : {
+        amount: '',
+        categoryId: '',
+        date: todayLocal(),
+        description: '',
+      }
+
 // Returns the first problem as a message, or '' when the form is valid
 const validate = (form) => {
   const amountText = form.amount.trim()
@@ -38,14 +54,13 @@ const validate = (form) => {
   return ''
 }
 
-function ExpenseForm({ onClose, onSaved }) {
+// Add mode when `expense` is null; edit mode pre-fills from it. The parent mounts a fresh
+// form for every open, so the state only needs to be initialized once (no effect).
+function ExpenseForm({ expense = null, onClose, onSaved }) {
+  const isEdit = expense !== null
+
   // Inputs stay strings while typing; they're converted once, on submit
-  const [form, setForm] = useState({
-    amount: '',
-    categoryId: '',
-    date: todayLocal(),
-    description: '',
-  })
+  const [form, setForm] = useState(() => initialForm(expense))
   const [categories, setCategories] = useState([])
   const [categoriesStatus, setCategoriesStatus] = useState('loading')  // 'loading' | 'loaded' | 'error'
   const [error, setError] = useState('')
@@ -90,13 +105,20 @@ function ExpenseForm({ onClose, onSaved }) {
 
     setError('')
     setSaving(true)
+    // Same payload shape for create (POST) and update (PUT)
+    const data = {
+      amount: Number(form.amount),
+      categoryId: Number(form.categoryId),  // the API rejects "2" for an int
+      date: `${form.date}T00:00:00`,          // local date, no time zone (same format the API returns)
+      description: form.description.trim() || null,
+    }
+
     try {
-      await createExpense({
-        amount: Number(form.amount),
-        categoryId: Number(form.categoryId),  // the API rejects "2" for an int
-        date: `${form.date}T00:00:00`,          // local date, no time zone (same format the API returns)
-        description: form.description.trim() || null,
-      })
+      if (isEdit) {
+        await updateExpense(expense.id, data)
+      } else {
+        await createExpense(data)
+      }
       onSaved()  // parent closes the modal and refreshes the list
     } catch (err) {
       // Show the backend's { message } (e.g. an unknown category) and let the user retry
@@ -108,7 +130,7 @@ function ExpenseForm({ onClose, onSaved }) {
   return (
     <div className="modal-overlay">
       <div className="modal" role="dialog" aria-modal="true" aria-labelledby="expense-form-title">
-        <h2 id="expense-form-title">Add Expense</h2>
+        <h2 id="expense-form-title">{isEdit ? 'Edit Expense' : 'Add Expense'}</h2>
 
         {error && <div className="form-error" role="alert">{error}</div>}
 
@@ -178,7 +200,7 @@ function ExpenseForm({ onClose, onSaved }) {
               Cancel
             </button>
             <button type="submit" className="btn-primary" disabled={saving}>
-              {saving ? 'Saving…' : 'Save'}
+              {saving ? 'Saving…' : isEdit ? 'Update' : 'Save'}
             </button>
           </div>
         </form>

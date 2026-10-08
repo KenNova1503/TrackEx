@@ -1,7 +1,7 @@
 import { formatCurrency, formatDate } from '../utils/format'
 
-// Read-only for now: the Actions column (Edit/Delete) comes in tasks 06–07
-function ExpenseRow({ expense }) {
+// The Delete button joins Edit in task 07
+function ExpenseRow({ expense, onEdit }) {
   return (
     <tr>
       <td>{formatDate(expense.date)}</td>
@@ -12,6 +12,17 @@ function ExpenseRow({ expense }) {
         {expense.description || '—'}
       </td>
       <td className="amount">{formatCurrency(expense.amount)}</td>
+      <td className="actions">
+        <button
+          type="button"
+          className="btn-sm"
+          onClick={() => onEdit(expense)}
+          // Screen readers hear which row the button edits, not just "Edit"
+          aria-label={`Edit ${expense.description || expense.categoryName} expense`}
+        >
+          Edit
+        </button>
+      </td>
     </tr>
   )
 }

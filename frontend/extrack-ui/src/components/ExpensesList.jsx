@@ -8,7 +8,8 @@ function ExpensesList({ selectedCategory, refreshTrigger, onExpensesChanged }) {
   const [expenses, setExpenses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [showForm, setShowForm] = useState(false)
+  // Which form is open: null = closed, { expense: null } = add, { expense } = edit that row
+  const [formState, setFormState] = useState(null)
 
   // Re-fetch when the category filter changes or a refresh is requested
   useEffect(() => {
@@ -36,7 +37,7 @@ function ExpensesList({ selectedCategory, refreshTrigger, onExpensesChanged }) {
 
   // Saved: close the modal and let App bump refreshTrigger, which re-runs the fetch above
   const handleSaved = () => {
-    setShowForm(false)
+    setFormState(null)
     onExpensesChanged()
   }
 
@@ -44,13 +45,17 @@ function ExpensesList({ selectedCategory, refreshTrigger, onExpensesChanged }) {
     <div className="expenses-list">
       <div className="list-header">
         <h1>Expenses</h1>
-        <button type="button" className="btn-primary" onClick={() => setShowForm(true)}>
+        <button type="button" className="btn-primary" onClick={() => setFormState({ expense: null })}>
           + Add Expense
         </button>
       </div>
 
-      {showForm && (
-        <ExpenseForm onClose={() => setShowForm(false)} onSaved={handleSaved} />
+      {formState && (
+        <ExpenseForm
+          expense={formState.expense}
+          onClose={() => setFormState(null)}
+          onSaved={handleSaved}
+        />
       )}
 
       {loading && <p className="status-message">Loading expenses…</p>}
@@ -66,7 +71,7 @@ function ExpensesList({ selectedCategory, refreshTrigger, onExpensesChanged }) {
       )}
 
       {!loading && !error && expenses.length > 0 && (
-        <ExpenseTable expenses={expenses} />
+        <ExpenseTable expenses={expenses} onEdit={expense => setFormState({ expense })} />
       )}
     </div>
   )
