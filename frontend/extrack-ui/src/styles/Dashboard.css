@@ -1,0 +1,31 @@
+/* Row of KPI cards: 4 across on wide screens, wrapping to 2 or 1 as space shrinks */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.summary-card {
+  padding: var(--spacing-md);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+}
+
+.card-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.card-value {
+  margin: 4px 0;
+  font-size: 24px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;  /* long category names don't overflow the card */
+}
+
+.card-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
