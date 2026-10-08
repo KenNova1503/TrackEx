@@ -28,6 +28,17 @@
   font-weight: 500;
 }
 
+/* Confirm dialog: narrower than the form, just a message and two buttons */
+.modal-confirm {
+  max-width: 400px;
+}
+
+.modal-message {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .form-group {
   margin-bottom: var(--spacing-md);
 }

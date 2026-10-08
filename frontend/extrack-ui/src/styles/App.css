@@ -9,6 +9,7 @@
   --border: #e1e0d9;
   --border-width: 0.5px;
   --danger: #d32f2f;
+  --on-danger: #ffffff;  /* text on a danger-colored background (destructive buttons) */
 
   --border-radius: 8px;
   --spacing-sm: 8px;
@@ -32,6 +33,7 @@
     --bg-surface: #242422;
     --border: #3a3935;
     --danger: #ef5350;
+    --on-danger: #0b0b0b;  /* white on the lighter red is only ~3.3:1 */
 
     color-scheme: dark;
   }
@@ -52,7 +54,8 @@ body {
 
 /* Shared buttons (list header, modal actions) */
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-destructive {
   padding: 8px 16px;
   border: var(--border-width) solid transparent;
   border-radius: 6px;
@@ -81,14 +84,26 @@ body {
   background: var(--bg-light);
 }
 
+/* Confirms an irreversible action (e.g. Delete in the confirm dialog) */
+.btn-destructive {
+  background: var(--danger);
+  color: var(--on-danger);
+}
+
+.btn-destructive:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
 .btn-primary:disabled,
-.btn-secondary:disabled {
+.btn-secondary:disabled,
+.btn-destructive:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 .btn-primary:focus-visible,
-.btn-secondary:focus-visible {
+.btn-secondary:focus-visible,
+.btn-destructive:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
