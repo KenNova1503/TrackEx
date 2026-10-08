@@ -123,13 +123,3 @@
   border-radius: 6px;
 }
 
-.category-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: var(--bg-light);
-  border: var(--border-width) solid var(--border);
-  border-radius: 999px;
-}

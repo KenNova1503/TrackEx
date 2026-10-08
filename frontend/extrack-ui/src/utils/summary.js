@@ -32,6 +32,21 @@ export const categoryTotals = (expenses, now = new Date()) => {
   return [...totals.values()].sort((a, b) => b.total - a.total)
 }
 
+// "YYYY-MM-DD" for a Date, in local time
+const dayKey = (date) => `${monthKey(date)}-${String(date.getDate()).padStart(2, '0')}`
+
+// The latest `limit` expenses up to and including today, across all months.
+// Future-dated expenses are left out ("recent" means already happened).
+// Newest date first; same-day expenses by id, newest first, so the order doesn't
+// depend on how the API happens to order ties (it sorts by date only).
+export const recentExpenses = (expenses, now = new Date(), limit = 5) => {
+  const today = dayKey(now)
+  return expenses
+    .filter(e => e.date.slice(0, 10) <= today)
+    .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)
+    .slice(0, limit)
+}
+
 // expenses:    rows for the current filter (all rows, or one category's)
 // monthly:     /summary/monthly for the same filter
 // allExpenses: every row, all categories (only needed when a category is selected, for its share)
