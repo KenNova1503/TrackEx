@@ -8,6 +8,7 @@
   --bg-surface: #faf9f8;
   --border: #e1e0d9;
   --border-width: 0.5px;
+  --chart-muted: #c9c7c0;  /* chart bars that aren't the selected category */
   --danger: #d32f2f;
   --on-danger: #ffffff;  /* text on a danger-colored background (destructive buttons) */
 
@@ -32,6 +33,7 @@
     --bg-light: #1a1a19;
     --bg-surface: #242422;
     --border: #3a3935;
+    --chart-muted: #4a4945;
     --danger: #ef5350;
     --on-danger: #0b0b0b;  /* white on the lighter red is only ~3.3:1 */
 
@@ -250,6 +252,61 @@ body {
   margin: 0 0 var(--spacing-lg);
   font-size: 24px;
   font-weight: 500;
+}
+
+/* Shared by both views: loading / empty / error lines */
+.status-message {
+  margin: 0;
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+}
+
+.status-message.error {
+  color: var(--danger);
+}
+
+/* Category pill (expenses table, recent expenses) */
+.category-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-light);
+  border: var(--border-width) solid var(--border);
+  border-radius: 999px;
+}
+
+/* Text-style button for secondary navigation (e.g. "View all →") */
+.btn-link {
+  padding: 2px 0;
+  border: none;
+  background: none;
+  color: var(--primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+.btn-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Re-fetching in the background: keep the current content visible, just dimmed */
+.is-refreshing {
+  opacity: 0.6;
+  transition: opacity 0.15s;
 }
 
 /* Stack the sidebar above the content on narrow screens (root CLAUDE.md § 6) */

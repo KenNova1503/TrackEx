@@ -12,21 +12,6 @@
   margin: 0;
 }
 
-/* Status lines: loading, empty and error */
-.status-message {
-  margin: 0;
-  padding: var(--spacing-lg);
-  text-align: center;
-  color: var(--text-secondary);
-  background: var(--bg-surface);
-  border: var(--border-width) solid var(--border);
-  border-radius: var(--border-radius);
-}
-
-.status-message.error {
-  color: var(--danger);
-}
-
 /* Scrolls sideways on narrow screens instead of squeezing the columns */
 .table-wrapper {
   overflow-x: auto;
@@ -123,12 +108,6 @@
   border-color: var(--danger);
 }
 
-/* Re-fetching in the background: keep the rows visible, just dimmed */
-.is-refreshing {
-  opacity: 0.6;
-  transition: opacity 0.15s;
-}
-
 /* A row action failed (e.g. delete); the table stays visible below it */
 .action-error {
   display: flex;
@@ -144,13 +123,3 @@
   border-radius: 6px;
 }
 
-.category-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: var(--bg-light);
-  border: var(--border-width) solid var(--border);
-  border-radius: 999px;
-}
