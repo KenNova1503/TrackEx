@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import ExpenseTable from './ExpenseTable'
+import ExpenseForm from './ExpenseForm'
 import { getExpenses } from '../services/api'
 import '../styles/ExpensesList.css'
 
-function ExpensesList({ selectedCategory, refreshTrigger }) {
+function ExpensesList({ selectedCategory, refreshTrigger, onExpensesChanged }) {
   const [expenses, setExpenses] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [showForm, setShowForm] = useState(false)
 
   // Re-fetch when the category filter changes or a refresh is requested
   useEffect(() => {
@@ -32,9 +34,24 @@ function ExpensesList({ selectedCategory, refreshTrigger }) {
     }
   }, [selectedCategory, refreshTrigger])
 
+  // Saved: close the modal and let App bump refreshTrigger, which re-runs the fetch above
+  const handleSaved = () => {
+    setShowForm(false)
+    onExpensesChanged()
+  }
+
   return (
     <div className="expenses-list">
-      <h1>Expenses</h1>
+      <div className="list-header">
+        <h1>Expenses</h1>
+        <button type="button" className="btn-primary" onClick={() => setShowForm(true)}>
+          + Add Expense
+        </button>
+      </div>
+
+      {showForm && (
+        <ExpenseForm onClose={() => setShowForm(false)} onSaved={handleSaved} />
+      )}
 
       {loading && <p className="status-message">Loading expenses…</p>}
 
