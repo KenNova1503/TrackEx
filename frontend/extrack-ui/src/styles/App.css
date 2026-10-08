@@ -1,6 +1,7 @@
 /* Theme tokens (root CLAUDE.md § 6) */
 :root {
   --primary: #2a78d6;
+  --on-primary: #ffffff;  /* text on a primary-colored background (buttons) */
   --text-primary: #0b0b0b;
   --text-secondary: #898781;
   --bg-light: #f0efec;
@@ -24,6 +25,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --primary: #5a9be6;
+    --on-primary: #0b0b0b;  /* white on the lighter blue is only ~2.9:1 */
     --text-primary: #f0efec;
     --text-secondary: #a3a19b;
     --bg-light: #1a1a19;
@@ -46,6 +48,49 @@ body {
   font-family: var(--font-family);
   background: var(--bg-light);
   color: var(--text-primary);
+}
+
+/* Shared buttons (list header, modal actions) */
+.btn-primary,
+.btn-secondary {
+  padding: 8px 16px;
+  border: var(--border-width) solid transparent;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-light);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* App shell: header on top, sidebar beside the main content */
