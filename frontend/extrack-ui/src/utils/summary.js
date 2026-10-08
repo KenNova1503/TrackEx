@@ -1,4 +1,4 @@
-// Numbers behind the Dashboard summary cards. Kept free of React so it's easy to test.
+// Numbers behind the Dashboard summary cards and category chart. Kept free of React so it's easy to test.
 // Every figure covers the current calendar month (local time); "vs last month" compares
 // month-to-date with the same days of last month.
 
@@ -18,10 +18,24 @@ const totalUpToDay = (expenses, key, lastDay) =>
     .filter(e => e.date.slice(0, 7) === key && Number(e.date.slice(8, 10)) <= lastDay)
     .reduce((sum, e) => sum + e.amount, 0)
 
-// expenses:   rows from getExpenses(categoryId) (already filtered by category)
-// monthly:    /summary/monthly for the same filter
-// allMonthly: /summary/monthly for all categories (only needed when a category is selected)
-export const computeSummary = ({ expenses, monthly, allMonthly = null, now = new Date() }) => {
+// This month's spending per category, highest first: [{ categoryId, categoryName, total }].
+// Feeds both the "Top category" card and the category chart, so they always agree.
+export const categoryTotals = (expenses, now = new Date()) => {
+  const key = monthKey(now)
+  const totals = new Map()
+  for (const e of expenses) {
+    if (e.date.slice(0, 7) !== key) continue
+    const entry = totals.get(e.categoryId) ?? { categoryId: e.categoryId, categoryName: e.categoryName, total: 0 }
+    entry.total += e.amount
+    totals.set(e.categoryId, entry)
+  }
+  return [...totals.values()].sort((a, b) => b.total - a.total)
+}
+
+// expenses:    rows for the current filter (all rows, or one category's)
+// monthly:     /summary/monthly for the same filter
+// allExpenses: every row, all categories (only needed when a category is selected, for its share)
+export const computeSummary = ({ expenses, monthly, allExpenses = null, now = new Date() }) => {
   const thisMonthKey = monthKey(now)
   const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)  // handles January
 
@@ -39,15 +53,12 @@ export const computeSummary = ({ expenses, monthly, allMonthly = null, now = new
   const count = thisMonthExpenses.length
 
   // Highest-spending category this month (/summary/category is all-time, so compute it here)
-  const totalsByCategory = {}
-  for (const e of thisMonthExpenses) {
-    totalsByCategory[e.categoryName] = (totalsByCategory[e.categoryName] ?? 0) + e.amount
-  }
-  const [topName, topTotal] =
-    Object.entries(totalsByCategory).sort((a, b) => b[1] - a[1])[0] ?? [null, 0]
+  const top = categoryTotals(expenses, now)[0] ?? null
 
   // Selected category's share of everyone's spending this month
-  const allThisMonthTotal = allMonthly ? monthTotal(allMonthly, now) : thisMonthTotal
+  const allThisMonthTotal = allExpenses
+    ? categoryTotals(allExpenses, now).reduce((sum, c) => sum + c.total, 0)
+    : thisMonthTotal
 
   return {
     thisMonthTotal,
@@ -60,8 +71,8 @@ export const computeSummary = ({ expenses, monthly, allMonthly = null, now = new
     change: lastMonthToDate > 0 ? ((thisMonthToDate - lastMonthToDate) / lastMonthToDate) * 100 : null,
     count,
     average: count > 0 ? thisMonthTotal / count : null,
-    topCategory: topName
-      ? { name: topName, total: topTotal, share: (topTotal / thisMonthTotal) * 100 }
+    topCategory: top
+      ? { name: top.categoryName, total: top.total, share: (top.total / thisMonthTotal) * 100 }
       : null,
     allThisMonthTotal,
     share: allThisMonthTotal > 0 ? (thisMonthTotal / allThisMonthTotal) * 100 : null,

@@ -8,6 +8,7 @@
   --bg-surface: #faf9f8;
   --border: #e1e0d9;
   --border-width: 0.5px;
+  --chart-muted: #c9c7c0;  /* chart bars that aren't the selected category */
   --danger: #d32f2f;
   --on-danger: #ffffff;  /* text on a danger-colored background (destructive buttons) */
 
@@ -32,6 +33,7 @@
     --bg-light: #1a1a19;
     --bg-surface: #242422;
     --border: #3a3935;
+    --chart-muted: #4a4945;
     --danger: #ef5350;
     --on-danger: #0b0b0b;  /* white on the lighter red is only ~3.3:1 */
 

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import SummaryCard from './SummaryCard'
+import CategoryChart from './CategoryChart'
 import { getExpenses, getMonthlySummary } from '../services/api'
 import { formatCurrency } from '../utils/format'
-import { computeSummary } from '../utils/summary'
+import { categoryTotals, computeSummary } from '../utils/summary'
 import '../styles/Dashboard.css'
 
 const monthName = new Intl.DateTimeFormat(undefined, { month: 'long' }).format(new Date())
@@ -16,9 +17,10 @@ const comparisonRange = (s) => {
   return s.comparisonDay === 1 ? `${month} 1` : `${month} 1–${s.comparisonDay}`
 }
 
-// Chart and recent expenses join the cards in tasks 09–10
+// Recent expenses join the cards and chart in task 10
 function Dashboard({ selectedCategory }) {
   const [summary, setSummary] = useState(null)
+  const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -30,13 +32,24 @@ function Dashboard({ selectedCategory }) {
       setLoading(true)
       setError('')
       try {
-        // In parallel; the unfiltered monthly totals are only needed for a category's share
-        const [expenses, monthly, allMonthly] = await Promise.all([
-          getExpenses(selectedCategory),
+        // All expenses (not just the selected category's): the chart shows every category with
+        // the selected one highlighted, and the share card compares against the total.
+        // The cards then filter this one list in the browser.
+        const [allExpenses, monthly] = await Promise.all([
+          getExpenses(),
           getMonthlySummary(selectedCategory),
-          selectedCategory ? getMonthlySummary() : null,
         ])
-        if (!ignore) setSummary(computeSummary({ expenses, monthly, allMonthly }))
+        if (ignore) return
+
+        const expenses = selectedCategory
+          ? allExpenses.filter(e => e.categoryId === selectedCategory)
+          : allExpenses
+        setSummary(computeSummary({
+          expenses,
+          monthly,
+          allExpenses: selectedCategory ? allExpenses : null,
+        }))
+        setChartData(categoryTotals(allExpenses))
       } catch (err) {
         if (!ignore) setError(err.message)
       } finally {
@@ -113,6 +126,9 @@ function Dashboard({ selectedCategory }) {
       {summary && !(error && !loading) && (
         <div className={loading ? 'is-refreshing' : ''} aria-busy={loading}>
           {renderCards(summary)}
+          <div className="dashboard-content">
+            <CategoryChart data={chartData} selectedCategory={selectedCategory} />
+          </div>
         </div>
       )}
     </div>
