@@ -82,6 +82,37 @@
   color: var(--text-secondary);
 }
 
+/* Row actions (Edit; Delete joins in task 07). Kept as a normal table cell:
+   display: flex on a <td> would break the table layout. */
+.expenses-table .actions {
+  text-align: right;
+}
+
+.expenses-table .actions .btn-sm + .btn-sm {
+  margin-left: var(--spacing-sm);
+}
+
+.btn-sm {
+  padding: 4px 12px;
+  border: var(--border-width) solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-sm:hover {
+  background: var(--bg-light);
+  border-color: var(--text-secondary);
+}
+
+.btn-sm:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .category-badge {
   display: inline-block;
   padding: 2px 8px;
