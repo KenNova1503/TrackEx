@@ -1,0 +1,156 @@
+/* Heading on the left, "+ Add Expense" on the right */
+.list-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.main-content .list-header h1 {
+  margin: 0;
+}
+
+/* Status lines: loading, empty and error */
+.status-message {
+  margin: 0;
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+}
+
+.status-message.error {
+  color: var(--danger);
+}
+
+/* Scrolls sideways on narrow screens instead of squeezing the columns */
+.table-wrapper {
+  overflow-x: auto;
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+}
+
+.expenses-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.expenses-table th,
+.expenses-table td {
+  padding: 12px var(--spacing-md);
+  text-align: left;
+  border-bottom: var(--border-width) solid var(--border);
+  white-space: nowrap;
+}
+
+.expenses-table th {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.expenses-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.expenses-table tbody tr:hover {
+  background: var(--bg-light);
+}
+
+/* Description is the only column allowed to wrap */
+.expenses-table td:nth-child(3) {
+  white-space: normal;
+  min-width: 160px;
+}
+
+.expenses-table .amount {
+  text-align: right;
+  font-variant-numeric: tabular-nums;  /* digits line up in the column */
+}
+
+.expenses-table td.amount {
+  font-weight: 500;
+}
+
+.expenses-table .muted {
+  color: var(--text-secondary);
+}
+
+/* Row actions (Edit, Delete). Kept as a normal table cell:
+   display: flex on a <td> would break the table layout. */
+.expenses-table .actions {
+  text-align: right;
+}
+
+.expenses-table .actions .btn-sm + .btn-sm {
+  margin-left: var(--spacing-sm);
+}
+
+.btn-sm {
+  padding: 4px 12px;
+  border: var(--border-width) solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-sm:hover {
+  background: var(--bg-light);
+  border-color: var(--text-secondary);
+}
+
+.btn-sm:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.btn-sm.btn-danger {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+}
+
+.btn-sm.btn-danger:hover {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border-color: var(--danger);
+}
+
+/* Re-fetching in the background: keep the rows visible, just dimmed */
+.is-refreshing {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+/* A row action failed (e.g. delete); the table stays visible below it */
+.action-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border: var(--border-width) solid color-mix(in srgb, var(--danger) 40%, transparent);
+  border-radius: 6px;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-light);
+  border: var(--border-width) solid var(--border);
+  border-radius: 999px;
+}

@@ -1,0 +1,287 @@
+/* Theme tokens (root CLAUDE.md § 6) */
+:root {
+  --primary: #2a78d6;
+  --on-primary: #ffffff;  /* text on a primary-colored background (buttons) */
+  --text-primary: #0b0b0b;
+  --text-secondary: #898781;
+  --bg-light: #f0efec;
+  --bg-surface: #faf9f8;
+  --border: #e1e0d9;
+  --border-width: 0.5px;
+  --danger: #d32f2f;
+  --on-danger: #ffffff;  /* text on a danger-colored background (destructive buttons) */
+
+  --border-radius: 8px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Lets the browser draw native controls (inputs, scrollbars) in the matching theme */
+  color-scheme: light;
+}
+
+/* Dark mode follows the system preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #5a9be6;
+    --on-primary: #0b0b0b;  /* white on the lighter blue is only ~2.9:1 */
+    --text-primary: #f0efec;
+    --text-secondary: #a3a19b;
+    --bg-light: #1a1a19;
+    --bg-surface: #242422;
+    --border: #3a3935;
+    --danger: #ef5350;
+    --on-danger: #0b0b0b;  /* white on the lighter red is only ~3.3:1 */
+
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--bg-light);
+  color: var(--text-primary);
+}
+
+/* Shared buttons (list header, modal actions) */
+.btn-primary,
+.btn-secondary,
+.btn-destructive {
+  padding: 8px 16px;
+  border: var(--border-width) solid transparent;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-light);
+}
+
+/* Confirms an irreversible action (e.g. Delete in the confirm dialog) */
+.btn-destructive {
+  background: var(--danger);
+  color: var(--on-danger);
+}
+
+.btn-destructive:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-destructive:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-destructive:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* App shell: header on top, sidebar beside the main content */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--bg-surface);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.nav {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.nav-btn {
+  padding: 6px 14px;
+  border: var(--border-width) solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.nav-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-light);
+}
+
+.nav-btn.active {
+  color: var(--primary);
+  font-weight: 500;
+  background: var(--bg-light);
+  border-color: var(--border);
+}
+
+.nav-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  padding: var(--spacing-md);
+  background: var(--bg-surface);
+  border-right: var(--border-width) solid var(--border);
+}
+
+/* Keeps the category list in view while a long page scrolls (desktop).
+   Capped to the window height with its own scrollbar, so on short windows
+   the bottom categories aren't stuck below the edge of the screen. */
+.sidebar-content {
+  position: sticky;
+  top: var(--spacing-md);
+  max-height: calc(100vh - 2 * var(--spacing-md));
+  overflow-y: auto;
+}
+
+.sidebar-title {
+  margin: 0 0 var(--spacing-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.sidebar-status {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.sidebar-error {
+  color: var(--danger);
+}
+
+/* Category filter: vertical list on desktop, wrapping chips on narrow screens */
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.category-btn {
+  width: 100%;
+  padding: 6px 10px;
+  border: var(--border-width) solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.category-btn:hover {
+  background: var(--bg-light);
+}
+
+.category-btn.active {
+  color: var(--primary);
+  font-weight: 500;
+  background: var(--bg-light);
+  border-color: var(--border);
+}
+
+.category-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;  /* lets wide tables shrink/scroll instead of stretching the layout */
+  padding: var(--spacing-lg);
+}
+
+.main-content h1 {
+  margin: 0 0 var(--spacing-lg);
+  font-size: 24px;
+  font-weight: 500;
+}
+
+/* Stack the sidebar above the content on narrow screens (root CLAUDE.md § 6) */
+@media (max-width: 900px) {
+  .main-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--border);
+  }
+
+  /* Stacked above the content: no sticking, no height cap */
+  .sidebar-content {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .category-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .category-btn {
+    width: auto;
+    padding: 4px 12px;
+    border-color: var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+  }
+}
