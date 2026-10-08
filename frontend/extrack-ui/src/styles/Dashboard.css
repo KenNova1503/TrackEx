@@ -30,28 +30,33 @@
   color: var(--text-secondary);
 }
 
-/* Below the cards: the chart (recent expenses joins it in a second column in task 10) */
+/* Below the cards: chart on the left, recent expenses on the right (root CLAUDE.md § 6);
+   stacked below 1100px (see the media query at the end) */
 .dashboard-content {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  align-items: start;
   gap: var(--spacing-md);
   margin-top: var(--spacing-lg);
 }
 
-.chart-card {
+.chart-card,
+.recent-card {
   padding: var(--spacing-md);
   background: var(--bg-surface);
   border: var(--border-width) solid var(--border);
   border-radius: var(--border-radius);
 }
 
-.chart-card h2 {
+.chart-card h2,
+.recent-card h2 {
   margin: 0;
   font-size: 16px;
   font-weight: 500;
 }
 
-.chart-subtitle {
+.chart-subtitle,
+.recent-subtitle {
   margin: 2px 0 var(--spacing-md);
   font-size: 13px;
   color: var(--text-secondary);
@@ -63,9 +68,71 @@
   width: 100%;
 }
 
-.chart-empty {
+.chart-empty,
+.recent-empty {
   margin: 0;
   padding: var(--spacing-lg) 0;
   text-align: center;
   color: var(--text-secondary);
+}
+
+/* Recent expenses: title + "View all →" on one line, then a compact list */
+.recent-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.recent-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recent-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: 10px 0;
+  border-top: var(--border-width) solid var(--border);
+}
+
+.recent-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;  /* lets long descriptions truncate instead of pushing the amount out */
+}
+
+.recent-description {
+  overflow: hidden;
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.recent-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.recent-amount {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Stacks earlier than the page layout (900px): the 220px sidebar and page padding come
+   out of the window width first, so at ~1000px the Recent column would only be ~290px */
+@media (max-width: 1100px) {
+  .dashboard-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

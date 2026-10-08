@@ -269,6 +269,40 @@ body {
   color: var(--danger);
 }
 
+/* Category pill (expenses table, recent expenses) */
+.category-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: var(--bg-light);
+  border: var(--border-width) solid var(--border);
+  border-radius: 999px;
+}
+
+/* Text-style button for secondary navigation (e.g. "View all →") */
+.btn-link {
+  padding: 2px 0;
+  border: none;
+  background: none;
+  color: var(--primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+.btn-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* Re-fetching in the background: keep the current content visible, just dimmed */
 .is-refreshing {
   opacity: 0.6;

@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import SummaryCard from './SummaryCard'
 import CategoryChart from './CategoryChart'
+import RecentExpenses from './RecentExpenses'
 import { getExpenses, getMonthlySummary } from '../services/api'
 import { formatCurrency } from '../utils/format'
-import { categoryTotals, computeSummary } from '../utils/summary'
+import { categoryTotals, computeSummary, recentExpenses } from '../utils/summary'
 import '../styles/Dashboard.css'
 
 const monthName = new Intl.DateTimeFormat(undefined, { month: 'long' }).format(new Date())
@@ -17,10 +18,11 @@ const comparisonRange = (s) => {
   return s.comparisonDay === 1 ? `${month} 1` : `${month} 1–${s.comparisonDay}`
 }
 
-// Recent expenses join the cards and chart in task 10
-function Dashboard({ selectedCategory }) {
+// onNavigate switches views (used by "View all →" in Recent expenses)
+function Dashboard({ selectedCategory, onNavigate }) {
   const [summary, setSummary] = useState(null)
   const [chartData, setChartData] = useState([])
+  const [recent, setRecent] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -50,6 +52,7 @@ function Dashboard({ selectedCategory }) {
           allExpenses: selectedCategory ? allExpenses : null,
         }))
         setChartData(categoryTotals(allExpenses))
+        setRecent(recentExpenses(expenses))  // follows the filter; any month, up to today
       } catch (err) {
         if (!ignore) setError(err.message)
       } finally {
@@ -128,6 +131,11 @@ function Dashboard({ selectedCategory }) {
           {renderCards(summary)}
           <div className="dashboard-content">
             <CategoryChart data={chartData} selectedCategory={selectedCategory} />
+            <RecentExpenses
+              expenses={recent}
+              filtered={selectedCategory !== null}
+              onViewAll={() => onNavigate('expenses')}
+            />
           </div>
         </div>
       )}
