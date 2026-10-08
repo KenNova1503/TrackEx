@@ -1,7 +1,9 @@
 import { formatCurrency, formatDate } from '../utils/format'
 
-// The Delete button joins Edit in task 07
-function ExpenseRow({ expense, onEdit }) {
+function ExpenseRow({ expense, onEdit, onDelete }) {
+  // Screen readers hear which row a button acts on, not just "Edit"/"Delete"
+  const label = expense.description || expense.categoryName
+
   return (
     <tr>
       <td>{formatDate(expense.date)}</td>
@@ -17,10 +19,17 @@ function ExpenseRow({ expense, onEdit }) {
           type="button"
           className="btn-sm"
           onClick={() => onEdit(expense)}
-          // Screen readers hear which row the button edits, not just "Edit"
-          aria-label={`Edit ${expense.description || expense.categoryName} expense`}
+          aria-label={`Edit ${label} expense`}
         >
           Edit
+        </button>
+        <button
+          type="button"
+          className="btn-sm btn-danger"
+          onClick={() => onDelete(expense)}
+          aria-label={`Delete ${label} expense`}
+        >
+          Delete
         </button>
       </td>
     </tr>

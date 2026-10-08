@@ -1,6 +1,6 @@
 import ExpenseRow from './ExpenseRow'
 
-function ExpenseTable({ expenses, onEdit }) {
+function ExpenseTable({ expenses, onEdit, onDelete }) {
   return (
     // Wrapper scrolls sideways on narrow screens instead of squeezing the columns
     <div className="table-wrapper">
@@ -16,7 +16,7 @@ function ExpenseTable({ expenses, onEdit }) {
         </thead>
         <tbody>
           {expenses.map(expense => (
-            <ExpenseRow key={expense.id} expense={expense} onEdit={onEdit} />
+            <ExpenseRow key={expense.id} expense={expense} onEdit={onEdit} onDelete={onDelete} />
           ))}
         </tbody>
       </table>

@@ -82,7 +82,7 @@
   color: var(--text-secondary);
 }
 
-/* Row actions (Edit; Delete joins in task 07). Kept as a normal table cell:
+/* Row actions (Edit, Delete). Kept as a normal table cell:
    display: flex on a <td> would break the table layout. */
 .expenses-table .actions {
   text-align: right;
@@ -111,6 +111,37 @@
 .btn-sm:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
+}
+
+.btn-sm.btn-danger {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+}
+
+.btn-sm.btn-danger:hover {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border-color: var(--danger);
+}
+
+/* Re-fetching in the background: keep the rows visible, just dimmed */
+.is-refreshing {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+/* A row action failed (e.g. delete); the table stays visible below it */
+.action-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border: var(--border-width) solid color-mix(in srgb, var(--danger) 40%, transparent);
+  border-radius: 6px;
 }
 
 .category-badge {
