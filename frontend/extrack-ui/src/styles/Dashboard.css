@@ -29,3 +29,43 @@
   font-size: 13px;
   color: var(--text-secondary);
 }
+
+/* Below the cards: the chart (recent expenses joins it in a second column in task 10) */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.chart-card {
+  padding: var(--spacing-md);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+}
+
+.chart-card h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.chart-subtitle {
+  margin: 2px 0 var(--spacing-md);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Chart.js sizes the canvas to this box (maintainAspectRatio: false) */
+.chart-canvas {
+  position: relative;
+  width: 100%;
+}
+
+.chart-empty {
+  margin: 0;
+  padding: var(--spacing-lg) 0;
+  text-align: center;
+  color: var(--text-secondary);
+}
