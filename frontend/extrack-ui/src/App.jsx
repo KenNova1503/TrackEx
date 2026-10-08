@@ -19,7 +19,7 @@ function App() {
       <div className="main-layout">
         <Sidebar selectedCategory={selectedCategory} onCategorySelect={setSelectedCategory} />
         <main className="main-content">
-          {currentView === 'dashboard' && <Dashboard />}
+          {currentView === 'dashboard' && <Dashboard selectedCategory={selectedCategory} />}
           {currentView === 'expenses' && (
             <ExpensesList
               selectedCategory={selectedCategory}

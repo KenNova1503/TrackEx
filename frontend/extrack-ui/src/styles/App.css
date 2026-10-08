@@ -252,6 +252,27 @@ body {
   font-weight: 500;
 }
 
+/* Shared by both views: loading / empty / error lines */
+.status-message {
+  margin: 0;
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--border-radius);
+}
+
+.status-message.error {
+  color: var(--danger);
+}
+
+/* Re-fetching in the background: keep the current content visible, just dimmed */
+.is-refreshing {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
 /* Stack the sidebar above the content on narrow screens (root CLAUDE.md § 6) */
 @media (max-width: 900px) {
   .main-layout {

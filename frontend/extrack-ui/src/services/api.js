@@ -75,6 +75,9 @@ export const getMonthlySummary = (categoryId = null) => {
   return fetchJSON(url)
 }
 
-export const getCategorySummary = () => {
-  return fetchJSON(`${BASE_URL}/expenses/summary/category`)
+export const getCategorySummary = (categoryId = null) => {
+  const url = categoryId
+    ? `${BASE_URL}/expenses/summary/category?categoryId=${categoryId}`
+    : `${BASE_URL}/expenses/summary/category`
+  return fetchJSON(url)
 }
