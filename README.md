@@ -4,6 +4,19 @@ A personal expense tracker built as a **portfolio project**. Its main purpose is
 
 The app itself is deliberately simple. You can add, edit, delete and filter expenses, and see totals by month and by category.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/dashboard_dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/dashboard_light.png">
+  <img alt="ExTrack dashboard: this month's summary cards, spending by category chart and recent expenses" src="docs/images/dashboard_light.png">
+</picture>
+
+| | |
+|:---:|:---:|
+| ![Dashboard filtered to one category: its share of this month's spending and its bar highlighted in the chart](docs/images/dashboard_filtered.png)<br>**Filter by category** | ![Add Expense form over the expenses list](docs/images/expense_add.png)<br>**Add an expense** |
+| ![Edit Expense form pre-filled from a row](docs/images/expense_edit.png)<br>**Edit an expense** | ![Delete confirmation dialog](docs/images/expense_delete.png)<br>**Delete with confirmation** |
+
+<sub>Screenshots use generated demo data ([`DemoDataSeeder.cs`](backend/ExTrack.API/Data/DemoDataSeeder.cs)), not real spending.</sub>
+
 ---
 
 ## What this project is (and isn't)
@@ -14,7 +27,7 @@ The app itself is deliberately simple. You can add, edit, delete and filter expe
 - **An AI workflow**: project context files, reusable skills and a spec → build → review → merge loop, with me reviewing every step
 - **.NET 10 / ASP.NET Core**: a REST API with controllers, a service layer, DTOs and dependency injection
 - **Entity Framework Core + Microsoft SQL Server**: code-first models, Fluent API configuration, seed data and migrations
-- **Plain React (JSX)**: function components with React's built-in hooks (`useState`, `useEffect`) and the Fetch API, with no Redux or other state-management libraries and no UI component libraries *(in progress)*
+- **Plain React (JSX)**: function components with React's built-in hooks (`useState`, `useEffect`) and the Fetch API, with no Redux or other state-management libraries and no UI component libraries
 
 **This project does not try to show:**
 
@@ -73,7 +86,7 @@ Claude Code handles the planned, reviewed feature work described above. Copilot 
 | Backend | .NET 10, ASP.NET Core Web API |
 | Data | Entity Framework Core 10, Microsoft SQL Server (LocalDB for development) |
 | API docs | OpenAPI + Swagger UI |
-| Frontend | React 19 (JSX), Vite, plain CSS *(in progress)* |
+| Frontend | React 19 (JSX), Vite, plain CSS, Chart.js |
 | AI tooling | Claude Code (Anthropic), GitHub Copilot, Context7 (MCP) |
 
 ---
@@ -84,7 +97,8 @@ Claude Code handles the planned, reviewed feature work described above. Copilot 
 |------|--------|
 | Database (EF Core, migrations, seed data) | ✅ Done |
 | REST API (expenses, categories, summaries) | ✅ Done |
-| React frontend | 🚧 In progress |
+| React frontend (dashboard, expenses CRUD, category filter) | ✅ Done |
+| Frontend polish (accessibility, contrast, docs sync) | 🚧 In progress |
 
 ---
 
@@ -125,6 +139,8 @@ In Development, pending migrations are applied automatically when the app starts
 ```
 ExTrack/
 ├── CLAUDE.md                 # Root AI context (scope, schema, API contract)
+├── docs/
+│   └── images/               # README screenshots and the GitHub social preview
 ├── backend/
 │   ├── ExTrack.slnx
 │   └── ExTrack.API/
@@ -138,7 +154,7 @@ ExTrack/
 │       ├── Models/
 │       └── Data/             # DbContext + migrations
 └── frontend/
-    └── extrack-ui/           # React app (in progress)
+    └── extrack-ui/           # React app
         ├── CLAUDE.md         # Frontend AI context
         ├── .claude/skills/   # /feature skill (copy of the backend's)
         └── context/          # AI rules, current feature, feature specs
